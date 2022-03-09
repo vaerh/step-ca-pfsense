@@ -1,0 +1,45 @@
+--- usr/local/pkg/acme/acme.inc 2022-03-04 16:19:50.000000000 +0300
++++ /usr/local/pkg/acme/acme.inc        2022-03-09 09:56:24.895563000 +0300
+@@ -190,6 +190,9 @@
+ $a_acmeserver['sslcom-ecc-production'] = array('name' => "SSL.com ECC Production (Applies rate limits to certificate requests)",
+     'url' => 'https://acme.ssl.com/sslcom-dv-ecc'
+ );
++$a_acmeserver['local-acme'] = array('name' => "acme.local",
++    'url' => 'https://acme.local/acme/acme/directory'
++);
+ /*$a_acmeserver['dummy'] = array('name' => "dummy",
+     'url' => 'https://example.org'
+ );*/
+@@ -1703,17 +1706,18 @@
+                                return $result;
+                        }
+
+-                       $renewafterdays = is_numericint($certificate['renewafter']) ? $certificate['renewafter'] : 60;
++                       $renewafterhours = is_numericint($certificate['renewafter']) ? $certificate['renewafter'] : 60*24;
++
+                        $timetorenew = false;
+                        $now = new \DateTime();
+                        $lastrenewal = new \DateTime();
+                        $lastrenewal->setTimestamp($certificate['lastrenewal']);
+-                       $nextrenewal = $lastrenewal->add(new \DateInterval('P'.$renewafterdays.'D'));
++                       $nextrenewal = $lastrenewal->add(new \DateInterval('PT'.$renewafterhours.'H'));
+                        if ($now >= $nextrenewal) {
+                                echo "## Its time to renew ##\n";
+                                $timetorenew = true;
+                        } else {
+-                               echo "Renewal number of days not yet reached.\n";
++                               echo "Renewal number of hours (days) not yet reached.\n";
+                        }
+                }
+
+diff -u usr/local/pkg/acme/acme_sh.inc /usr/local/pkg/acme/acme_sh.inc
+--- usr/local/pkg/acme/acme_sh.inc      2022-03-04 16:19:50.000000000 +0300
++++ /usr/local/pkg/acme/acme_sh.inc     2022-03-05 14:52:21.446123000 +0300
+@@ -74,6 +74,7 @@
+                $env = array();
+                $env['path'] = "/etc:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin/";
+                $env['PATH'] = "/etc:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin/";
++               $env['CA_PATH'] = "/etc/ssl/certs";
+
+                /* Setup Proxy Variables */
+                if (!empty($config['system']['proxyurl'])) {
