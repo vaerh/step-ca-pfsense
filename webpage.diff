@@ -1,0 +1,10 @@
+--- /usr/local/www/acme/acme_certificates_edit.php.orig 2022-03-10 11:52:50.139517000 +0300
++++ /usr/local/www/acme/acme_certificates_edit.php      2022-03-10 11:53:29.068166000 +0300
+@@ -426,7 +426,7 @@
+ ))->setReadonly()->setHelp('The last time this certificate was renewed');
+
+ $section->addInput(new \Form_Input('renewafter', 'Certificate renewal after', 'text', $pconfig['renewafter']
+-))->setHelp('After how many days the certificate should be renewed, defaults to 60');
++))->setHelp('After how many hours the certificate should be renewed, defaults to 1440 (60 days)');
+
+ $form->add($section);
