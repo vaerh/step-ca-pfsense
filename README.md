@@ -5,4 +5,4 @@ The patch fixes the [problem](https://redmine.pfsense.org/issues/9833) with obta
 
 Updating certificates in my case has been resolved through a custom cron task.
 
-<em>16	*/12	*	*	*	root	/usr/local/pkg/acme/acme_command.sh "renewall" | /usr/bin/logger -t ACME 2>&1</em>
+<em>16	*/12	*	*	*	root	/usr/local/pkg/acme/acme_command.sh "renewall" 2>&1 | /usr/bin/logger -t ACME
